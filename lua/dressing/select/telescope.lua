@@ -96,8 +96,19 @@ M.select = function(config, items, opts, on_choice)
   local defaults = {
     prompt_title = opts.prompt,
     previewer = false,
-    finder = finders.new_table({
-      results = items,
+    finder = finders.new_dynamic({
+      fn = function(prompt)
+        local item_list = {}
+        for _, i in ipairs(items) do
+          table.insert(item_list, i)
+        end
+
+        if opts.include_prompt_in_entries then
+          table.insert(item_list, prompt)
+        end
+
+        return item_list
+      end,
       entry_maker = entry_maker,
     }),
     sorter = conf.generic_sorter(opts),
